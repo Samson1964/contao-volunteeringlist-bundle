@@ -1,5 +1,5 @@
 {
-    "name": "schachbulle/contao-spielerregister-bundle",
+    "name": "schachbulle/contao-volunteeringlist-bundle",
     "type": "contao-bundle",
     "description": "DSB-Funktionärsliste für Contao 4",
     "license": "LGPL-3.0-or-later",
