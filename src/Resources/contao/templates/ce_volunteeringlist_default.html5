@@ -1,0 +1,26 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+	<div class="list_header">
+		<div class="col1">Zeitraum</div>
+		<div class="col2">Amtsinhaber</div>
+	</div>
+
+<?php foreach($this->items as $item): ?>
+	<div class="list_content">
+		<div class="timeperiod"><?= $item['fromto'] ?></div>
+		<div class="image">
+			<?php if ($item['image']): ?>
+				<a href="<?= $item['image'] ?>" data-lightbox="vl<?= $item['id'] ?>"><img src="<?= $item['thumbnail'] ?>"></a>
+			<?php endif; ?>
+		</div>
+		<div class="infobox">
+			<div class="name"><?php if ($item['playerbase_url']): ?><a href="<?= $item['playerbase_url'] ?>"><?php endif; ?><?= $item['name'] ?><?php if ($item['playerbase_url']): ?></a><?php endif; ?></div>
+			<div class="livedata"><?= $item['lifedate'] ?></div>
+			<div class="description"><?= $item['info'] ?></div>
+		</div>
+	</div>
+<?php endforeach; ?>
+
+<?php $this->endblock(); ?>
