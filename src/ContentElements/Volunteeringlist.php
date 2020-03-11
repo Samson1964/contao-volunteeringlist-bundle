@@ -33,7 +33,7 @@ class Volunteeringlist extends \ContentElement
 				$picHeight = $this->volunteeringlist_picHeight ? $this->volunteeringlist_picHeight : $GLOBALS['TL_CONFIG']['volunteeringlist_picHeight'];
 
 				// Standard-CSS optional einbinden
-				if($GLOBALS['TL_CONFIG']['volunteeringlist_css']) $GLOBALS['TL_CSS']['volunteeringlist'] = 'system/modules/volunteeringlist/assets/default.css';
+				if($GLOBALS['TL_CONFIG']['volunteeringlist_css']) $GLOBALS['TL_CSS']['volunteeringlist'] = 'bundles/contaovolunteeringlist/default.css';
 
 				// Template zuweisen
 				if($this->volunteeringlist_alttemplate) // Alternativ-Template wurde definiert
@@ -82,12 +82,12 @@ class Volunteeringlist extends \ContentElement
 							'id'                => $i,
 							'name'              => $objItems->name,
 							'register_id'       => $objItems->spielerregister_id,
-							'birthday'          => $objRegister ? $this->getDate($objRegister->birthday) : $this->getDate($objItems->birthday),
-							'deathday'          => $objRegister ? $this->getDate($objRegister->deathday) : $this->getDate($objItems->deathday),
-							'playerbase_url'    => $objItems->spielerregister_id ? Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getPlayerlink($objItems->spielerregister_id) : false,
+							'birthday'          => $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->birthday) : \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItems->birthday),
+							'deathday'          => $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->deathday) : \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItems->deathday),
+							'playerbase_url'    => $objItems->spielerregister_id ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getPlayerlink($objItems->spielerregister_id) : false,
 							'lifedate'          => self::getLivedata($objItems, $objRegister),
-							'fromDate'          => $this->getDate($objItems->fromDate),
-							'toDate'            => $this->getDate($objItems->toDate),
+							'fromDate'          => \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItems->fromDate),
+							'toDate'            => \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItems->toDate),
 							'fromto'            => self::getPeriod($objItems),
 							'info'              => $objItems->info,
 							'image'             => $image,
@@ -103,41 +103,14 @@ class Volunteeringlist extends \ContentElement
 	}
 
 	/**
-	* Datumswert aus Datenbank umwandeln
-	* @param mixed
-	* @return mixed
-	*/
-	protected function getDate($varValue)
-	{
-		$laenge = strlen($varValue);
-		$temp = '';
-		switch($laenge)
-		{
-			case 8: // JJJJMMTT
-				$temp = substr($varValue,6,2).'.'.substr($varValue,4,2).'.'.substr($varValue,0,4);
-				break;
-			case 6: // JJJJMM
-				$temp = substr($varValue,4,2).'.'.substr($varValue,0,4);
-				break;
-			case 4: // JJJJ
-				$temp = $varValue;
-				break;
-			default: // anderer Wert
-				$temp = '';
-		}
-
-		return $temp;
-	}
-
-	/**
 	* Gibt die Lebensdaten formatiert zurück
 	* @param mixed
 	* @return mixed
 	*/
 	protected function getLivedata($objItem, $objRegister)
 	{
-		$birthday = $objRegister ? self::getDate($objRegister->birthday) : self::getDate($objItem->birthday);
-		$deathday = $objRegister ? self::getDate($objRegister->deathday) : self::getDate($objItem->deathday);
+		$birthday = $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->birthday) : self::getDate($objItem->birthday);
+		$deathday = $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->deathday) : self::getDate($objItem->deathday);
 		$birthplace = $objRegister ? $objRegister->birthplace : $objItem->birthplace;
 		$deathplace = $objRegister ? $objRegister->deathplace : $objItem->deathplace;
 
@@ -166,19 +139,19 @@ class Volunteeringlist extends \ContentElement
 		// Von/Bis-Artikel festlegen
 		if($objItem->fromDate && $objItem->toDate)
 		{
-			$von .= self::getDate($objItem->fromDate);
-			$bis .= self::getDate($objItem->toDate);
+			$von .= \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->fromDate);
+			$bis .= \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->toDate);
 			$between = ' - ';
 		}
 		elseif($objItem->fromDate && !$objItem->toDate)
 		{
-			$von = 'seit '.$von.self::getDate($objItem->fromDate);
+			$von = 'seit '.$von.\Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->fromDate);
 			$bis = '';
 		}
 		elseif(!$objItem->fromDate && $objItem->toDate)
 		{
 			$von = '';
-			$bis = 'bis '.$bis.self::getDate($objItem->toDate);
+			$bis = 'bis '.$bis.\Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->toDate);
 		}
 		else
 		{

@@ -27,7 +27,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 		(
 			'keys' => array
 			(
-				'id' => 'primary',
+				'id'  => 'primary',
 				'pid' => 'index',
 			)
 		)
@@ -161,11 +161,11 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('\Samson\Helper', 'getDate')
+				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('\Samson\Helper', 'putDate')
+				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
 		), 
@@ -198,11 +198,11 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('\Samson\Helper', 'getDate')
+				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('\Samson\Helper', 'putDate')
+				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
 		), 
@@ -235,11 +235,11 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('\Samson\Helper', 'getDate')
+				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('\Samson\Helper', 'putDate')
+				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
 		), 
@@ -269,11 +269,11 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('\Samson\Helper', 'getDate')
+				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('\Samson\Helper', 'putDate')
+				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
 		), 
@@ -301,7 +301,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['spielerregister_id'],
 			'exclude'                 => true,
-			'options_callback'        => array('Samson\Playerbase\Helper', 'getRegister'),
+			'options_callback'        => array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'getRegister'),
 			'inputType'               => 'select',
 			'eval'                    => array
 			(
