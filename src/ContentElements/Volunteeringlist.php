@@ -64,12 +64,10 @@ class Volunteeringlist extends \ContentElement
 						if($objItems->singleSRC)
 						{
 							$objFile = \FilesModel::findByPk($objItems->singleSRC);
-							$item[$i]['image'] = $objFile->path;
-							$item[$i]['thumbnail'] = \Image::get($objFile->path, 70, 70, 'crop');
 							$image = $objFile->path;
 							$thumbnail = \Image::get($objFile->path, $picWidth, $picHeight, 'crop');
 						}
-						else 
+						else
 						{
 							$image = false;
 							$thumbnail = false;
@@ -109,8 +107,8 @@ class Volunteeringlist extends \ContentElement
 	*/
 	protected function getLivedata($objItem, $objRegister)
 	{
-		$birthday = $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->birthday) : self::getDate($objItem->birthday);
-		$deathday = $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->deathday) : self::getDate($objItem->deathday);
+		$birthday = $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->birthday) : \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->birthday);
+		$deathday = $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->deathday) : \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->deathday);
 		$birthplace = $objRegister ? $objRegister->birthplace : $objItem->birthplace;
 		$deathplace = $objRegister ? $objRegister->deathplace : $objItem->deathplace;
 

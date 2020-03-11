@@ -1,5 +1,10 @@
 # Funktionärsliste Changelog
 
+## Version 1.0.2 (2020-03-11)
+
+- Fix: Aufruf getDate in Volunteeringlist.php
+- Fix: Generierung der Funktionärsliste Frontend
+
 ## Version 1.0.1 (2020-03-11)
 
 - Fix: Template mod_volunterringlist_mini
