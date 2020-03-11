@@ -1,7 +1,7 @@
 <div class="ce_table block">
 
 	<?php if ($this->headline): ?>
-		<<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+		<<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
 	<?php endif; ?>
 
 	<table>
@@ -9,18 +9,20 @@
 			<th>Zeitraum</th>
 			<th>Amtsinhaber</th>
 		</tr>
-	<?php foreach($this->item as $item): ?>
-		<tr>
-			<td><?php echo $item['fromto']; ?></td>
-			<td>
-			<?php if($item['register_id']): ?>
-				<a href="person/player/<?php echo $item['register_id']; ?>.html" class="spielerregister"><?php echo $item['name']; ?></a>
-			<?php else: ?>
-				<?php echo $item['name']; ?>
-			<?php endif; ?>
-			</td>
-		</tr>
-	<?php endforeach; ?>
+	<?php if($this->items): ?>
+		<?php foreach($this->items as $item): ?>
+			<tr>
+				<td><?= $item['fromto'] ?></td>
+				<td>
+				<?php if($item['register_id']): ?>
+					<a href="person/player/<?= $item['register_id']; ?>.html" class="spielerregister"><?= $item['name'] ?></a>
+				<?php else: ?>
+					<?= $item['name'] ?>
+				<?php endif; ?>
+				</td>
+			</tr>
+		<?php endforeach; ?>
+	<?php endif; ?>
 	</table>
 
 </div>
