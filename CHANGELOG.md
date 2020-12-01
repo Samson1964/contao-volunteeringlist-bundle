@@ -1,5 +1,16 @@
 # Funktionärsliste Changelog
 
+## Version 2.0.0 (2020-12-01)
+
+- Fix: includeBlankOption fehlte in tl_volunteeringlist_items.spielerregister_id
+- Add: Abhängigkeit schachbulle/contao-helper-bundle
+- Fix: Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper ersetzt durch Schachbulle\ContaoHelperBundle\Classes
+- Delete: volunteeringlist_picWidth und volunteeringlist_picHeight in tl_settings
+- Add: volunteeringlist_defaultImage und volunteeringlist_imageSize in tl_settings (Bildgrößen aus Contao werden verwendet)
+- Change: Template ce_volunteeringlist_default umgebaut (Contao-4-Format)
+- Delete: Templates mod_volunteeringlist - werden ersetzt durch ce_volunteeringlist
+- Add: Umbau auf Bildgrößen in Volunteeringlist.php
+
 ## Version 1.0.2 (2020-03-11)
 
 - Fix: Aufruf getDate in Volunteeringlist.php

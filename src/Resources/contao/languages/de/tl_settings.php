@@ -19,8 +19,6 @@ $GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_legend']                   
 /**
  * fields
  */
-$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_picWidth'] = array('Bildbreite Eintrag', 'Breite des Vorschaubildes in px für Einträge');
-$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_picHeight'] = array('Bildhöhe Eintrag', 'Höhe des Vorschaubildes in px für Einträge');
+$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_defaultImage'] = array('Standardbild', 'Standardbild für Funktionäre');
+$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_imageSize'] = array('Bildgröße', 'Größe der Funktionärsbilder');
 $GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_css'] = array('Standard-CSS', 'Standard-CSS einbinden');
-
-?>

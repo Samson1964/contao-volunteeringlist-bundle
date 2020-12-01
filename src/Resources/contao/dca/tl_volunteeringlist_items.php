@@ -42,7 +42,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'fields'                  => array('sorting'),
 			'headerFields'            => array('title', 'templatefile'),
 			'panelLayout'             => 'filter;sort,search,limit',
-			'child_record_callback'   => array('tl_volunteeringlist_items', 'listPersons'),  
+			'child_record_callback'   => array('tl_volunteeringlist_items', 'listPersons'),
 		),
 		'global_operations' => array
 		(
@@ -100,7 +100,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('protected'), 
+		'__selector__'                => array('protected'),
 		'default'                     => '{person_legend},name,birthday,birthplace,deathday,deathplace,singleSRC;{function_legend},fromDate,toDate,fromDate_unknown,toDate_unknown,info;{register_legend},spielerregister_id;{publish_legend},published'
 	),
 
@@ -108,8 +108,8 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 	'subpalettes' => array
 	(
 		'protected'                   => 'groups'
-	), 
-	
+	),
+
 	// Fields
 	'fields' => array
 	(
@@ -130,7 +130,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 		'sorting' => array
 		(
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),  
+		),
 		'name' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['name'],
@@ -141,7 +141,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'inputType'               => 'text',
 			'eval'                    => array
 			(
-				'maxlength'           => 255, 
+				'maxlength'           => 255,
 				'tl_class'            => 'w50',
 				'mandatory'           => true
 			),
@@ -161,14 +161,14 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'getDate')
+				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'putDate')
+				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
-		), 
+		),
 		'birthplace' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['birthplace'],
@@ -179,7 +179,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'inputType'               => 'text',
 			'eval'                    => array
 			(
-				'maxlength'           => 255, 
+				'maxlength'           => 255,
 				'tl_class'            => 'w50'
 			),
 			'sql'                     => "varchar(255) NOT NULL default ''"
@@ -198,14 +198,14 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'getDate')
+				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'putDate')
+				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
-		), 
+		),
 		'deathplace' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['deathplace'],
@@ -216,7 +216,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'inputType'               => 'text',
 			'eval'                    => array
 			(
-				'maxlength'           => 255, 
+				'maxlength'           => 255,
 				'tl_class'            => 'w50'
 			),
 			'sql'                     => "varchar(255) NOT NULL default ''"
@@ -235,14 +235,14 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'getDate')
+				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'putDate')
+				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
-		), 
+		),
 		'fromDate_unknown' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['fromDate_unknown'],
@@ -269,14 +269,14 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'getDate')
+				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper', 'putDate')
+				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
-		), 
+		),
 		'toDate_unknown' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['toDate_unknown'],
@@ -294,9 +294,15 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['singleSRC'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('filesOnly'=>true, 'fieldType'=>'radio', 'tl_class'=>'clr'),
+			'eval'                    => array
+			(
+				'filesOnly'           => true,
+				'fieldType'           => 'radio',
+				'extensions'          => Config::get('validImageTypes'),
+				'tl_class'            => 'clr'
+			),
 			'sql'                     => "binary(16) NULL",
-		), 
+		),
 		'spielerregister_id' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['spielerregister_id'],
@@ -305,13 +311,14 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'inputType'               => 'select',
 			'eval'                    => array
 			(
-				'mandatory'           => false, 
-				'multiple'            => false, 
+				'includeBlankOption'  => true,
+				'mandatory'           => false,
+				'multiple'            => false,
 				'chosen'              => true,
 				'submitOnChange'      => false,
 				'tl_class'            => 'long'
 			),
-			'sql'                     => "int(10) unsigned NOT NULL default '0'" 
+			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'info' => array
 		(
@@ -327,7 +334,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'explanation'             => 'insertTags',
 			'sql'                     => "mediumtext NULL"
-		), 
+		),
 		'published' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['published'],
@@ -358,7 +365,7 @@ class tl_volunteeringlist_items extends Backend
 {
 
 	var $nummer = 0;
-	
+
 	/**
 	 * Import the back end user object
 	 */
@@ -411,9 +418,9 @@ class tl_volunteeringlist_items extends Backend
 			}
 			$this->redirect($backlink.'?act=error');
 		}
-		
+
 		$this->createInitialVersion('tl_volunteeringlist_items', $intId);
-		
+
 		// Trigger the save_callback
 		if (is_array($GLOBALS['TL_DCA']['tl_volunteeringlist']['fields']['published']['save_callback']))
 		{
@@ -423,7 +430,7 @@ class tl_volunteeringlist_items extends Backend
 				$blnPublished = $this->$callback[0]->$callback[1]($blnPublished, $this);
 			}
 		}
-		
+
 		// Update the database
 		$this->Database->prepare("UPDATE tl_volunteeringlist_items SET tstamp=". time() .", published='" . ($blnPublished ? '' : '1') . "' WHERE id=?")
 		               ->execute($intId);
@@ -443,8 +450,8 @@ class tl_volunteeringlist_items extends Backend
 	public function listPersons($arrRow)
 	{
 		$temp = '<div class="tl_content_left">';
-		($arrRow['fromDate']) ? $temp .= Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($arrRow['fromDate']) . ' - ' : $temp .= '? - ';
-		($arrRow['toDate']) ? $temp .= Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($arrRow['toDate']) : $temp .= '?';
+		($arrRow['fromDate']) ? $temp .= \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($arrRow['fromDate']) . ' - ' : $temp .= '? - ';
+		($arrRow['toDate']) ? $temp .= \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($arrRow['toDate']) : $temp .= '?';
 		if($arrRow['name']) $temp .= ' <b>' . $arrRow['name'] . '</b>';
 		return $temp.'</div>';
 	}

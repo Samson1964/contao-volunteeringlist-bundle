@@ -19,34 +19,41 @@ class Volunteeringlist extends \ContentElement
 	 */
 	protected function compile()
 	{
-		// Adresse aus Datenbank laden, wenn ID übergeben wurde
+		// Funktionäre aus Datenbank laden, wenn ID übergeben wurde
 		if($this->volunteeringlist)
 		{
 			// Listentitel laden
 			$objListe = $this->Database->prepare("SELECT * FROM tl_volunteeringlist WHERE id=?")
 			                           ->execute($this->volunteeringlist);
+
 			// Liste gefunden
 			if($objListe)
 			{
-				// Voreinstellungen Bilder laden
-				$picWidth = $this->volunteeringlist_picWidth ? $this->volunteeringlist_picWidth : $GLOBALS['TL_CONFIG']['volunteeringlist_picWidth'];
-				$picHeight = $this->volunteeringlist_picHeight ? $this->volunteeringlist_picHeight : $GLOBALS['TL_CONFIG']['volunteeringlist_picHeight'];
+				// Voreinstellungen Bilder und CSS laden
+				$defaultImage = $GLOBALS['TL_CONFIG']['volunteeringlist_defaultImage'];
+				$imageSize = $GLOBALS['TL_CONFIG']['volunteeringlist_imageSize'];
+				if($GLOBALS['TL_CONFIG']['volunteeringlist_css']) $GLOBALS['TL_CSS'][] = 'bundles/contaovolunteeringlist/default.css';
 
-				// Standard-CSS optional einbinden
-				if($GLOBALS['TL_CONFIG']['volunteeringlist_css']) $GLOBALS['TL_CSS']['volunteeringlist'] = 'bundles/contaovolunteeringlist/default.css';
+				if($this->volunteeringlist_alttemplate)
+				{
+					// Alternatives Template zuweisen
+					$this->Template = new \FrontendTemplate($this->volunteeringlist_alttemplate);
+				}
+				else
+				{
+					// Template aus Listenkonfiguration zuweisen
+					$this->Template = new \FrontendTemplate($objListe->templatefile);
+				}
 
-				// Template zuweisen
-				if($this->volunteeringlist_alttemplate) // Alternativ-Template wurde definiert
-					$this->Template = new \FrontendTemplate($this->volunteeringlist_template);
-				else // Kein Alternativ-Template, dann Standard-Template nehmen
-					($objListe->templatefile) ? $this->Template = new \FrontendTemplate($objListe->templatefile) : $this->Template = new FrontendTemplate($this->strTemplate);
 				// Restliche Variablen zuweisen
 				$this->Template->id = $this->volunteeringlist;
-				$this->Template->vorlage = $objListe->templatefile;
 				$this->Template->title = $objListe->title;
+
 				// Listeneinträge laden
 				$objItems = $this->Database->prepare("SELECT * FROM tl_volunteeringlist_items WHERE pid = ? AND published = ? ORDER BY sorting")
 				                           ->execute($this->volunteeringlist, 1);
+
+				// Einträge der Reihe nach durchgehen
 				if($objItems)
 				{
 
@@ -64,14 +71,13 @@ class Volunteeringlist extends \ContentElement
 						if($objItems->singleSRC)
 						{
 							$objFile = \FilesModel::findByPk($objItems->singleSRC);
-							$image = $objFile->path;
-							$thumbnail = \Image::get($objFile->path, $picWidth, $picHeight, 'crop');
 						}
 						else
 						{
-							$image = false;
-							$thumbnail = false;
+							$objFile = \FilesModel::findByUuid($defaultImage);
 						}
+						$objBild = new \stdClass();
+						\Controller::addImageToTemplate($objBild, array('singleSRC' => $objFile->path, 'size' => unserialize($imageSize)), \Config::get('maxImageWidth'), null, $objFile);
 
 						// Person hinzufügen
 						$item[] = array
@@ -80,16 +86,20 @@ class Volunteeringlist extends \ContentElement
 							'id'                => $i,
 							'name'              => $objItems->name,
 							'register_id'       => $objItems->spielerregister_id,
-							'birthday'          => $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->birthday) : \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItems->birthday),
-							'deathday'          => $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->deathday) : \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItems->deathday),
+							'birthday'          => $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->birthday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->birthday),
+							'deathday'          => $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->deathday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->deathday),
 							'playerbase_url'    => $objItems->spielerregister_id ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getPlayerlink($objItems->spielerregister_id) : false,
 							'lifedate'          => self::getLivedata($objItems, $objRegister),
-							'fromDate'          => \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItems->fromDate),
-							'toDate'            => \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItems->toDate),
+							'fromDate'          => \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->fromDate),
+							'toDate'            => \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->toDate),
 							'fromto'            => self::getPeriod($objItems),
 							'info'              => $objItems->info,
-							'image'             => $image,
-							'thumbnail'         => $thumbnail
+							'image'             => $objBild->singleSRC,
+							'imageSize'         => $objBild->imgSize,
+							'imageTitle'        => $objBild->imageTitle,
+							'imageAlt'          => $objBild->alt,
+							'imageCaption'      => $objBild->caption,
+							'thumbnail'         => $objBild->src
 						);
 						$i++;
 					}
@@ -107,8 +117,8 @@ class Volunteeringlist extends \ContentElement
 	*/
 	protected function getLivedata($objItem, $objRegister)
 	{
-		$birthday = $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->birthday) : \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->birthday);
-		$deathday = $objRegister ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objRegister->deathday) : \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->deathday);
+		$birthday = $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->birthday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->birthday);
+		$deathday = $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->deathday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->deathday);
 		$birthplace = $objRegister ? $objRegister->birthplace : $objItem->birthplace;
 		$deathplace = $objRegister ? $objRegister->deathplace : $objItem->deathplace;
 
@@ -137,19 +147,19 @@ class Volunteeringlist extends \ContentElement
 		// Von/Bis-Artikel festlegen
 		if($objItem->fromDate && $objItem->toDate)
 		{
-			$von .= \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->fromDate);
-			$bis .= \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->toDate);
+			$von .= \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->fromDate);
+			$bis .= \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->toDate);
 			$between = ' - ';
 		}
 		elseif($objItem->fromDate && !$objItem->toDate)
 		{
-			$von = 'seit '.$von.\Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->fromDate);
+			$von = 'seit '.$von.\Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->fromDate);
 			$bis = '';
 		}
 		elseif(!$objItem->fromDate && $objItem->toDate)
 		{
 			$von = '';
-			$bis = 'bis '.$bis.\Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getDate($objItem->toDate);
+			$bis = 'bis '.$bis.\Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->toDate);
 		}
 		else
 		{

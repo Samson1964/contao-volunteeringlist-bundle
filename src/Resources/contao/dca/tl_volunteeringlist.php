@@ -245,11 +245,11 @@ class tl_volunteeringlist extends Backend
 		if(version_compare(VERSION.BUILD, '2.9.0', '>=') && version_compare(VERSION.BUILD, '4.8.0', '<'))
 		{
 			// Den 2. Parameter gibt es nur ab Conato 2.9 bis 4.7
-			return $this->getTemplateGroup('mod_volunteeringlist_', $dc->activeRecord->id);
+			return $this->getTemplateGroup('ce_volunteeringlist_', $dc->activeRecord->id);
 		}
 		else
 		{
-			return $this->getTemplateGroup('mod_volunteeringlist_');
+			return $this->getTemplateGroup('ce_volunteeringlist_');
 		}
 	} 
 
