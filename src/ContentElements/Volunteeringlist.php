@@ -37,7 +37,7 @@ class Volunteeringlist extends \ContentElement
 				if($this->volunteeringlist_alttemplate)
 				{
 					// Alternatives Template zuweisen
-					$this->Template = new \FrontendTemplate($this->volunteeringlist_alttemplate);
+					$this->Template = new \FrontendTemplate($this->volunteeringlist_template);
 				}
 				else
 				{

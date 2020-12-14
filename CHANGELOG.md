@@ -1,5 +1,10 @@
 # Funktionärsliste Changelog
 
+## Version 2.1.1 (2020-12-14)
+
+* Fix: Alternatives Template ist falsch verlinkt in Volunteeringlist.php (mit der Checkbox)
+* Fix: Template ce_volunteeringlist_mini hinzugefügt
+
 ## Version 2.1.0 (2020-12-14)
 
 * Add: Checkbox um optional im Frontend die Lebensdaten auszublenden
