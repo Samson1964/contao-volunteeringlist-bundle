@@ -17,7 +17,9 @@
 			</div>
 			<div class="infobox">
 				<div class="name"><?php if ($item['playerbase_url']): ?><a href="<?= $item['playerbase_url'] ?>"><?php endif; ?><?= $item['name'] ?><?php if ($item['playerbase_url']): ?></a><?php endif; ?></div>
-				<div class="livedata"><?= $item['lifedate'] ?></div>
+				<?php if($item['lifedate']): ?>
+					<div class="livedata"><?= $item['lifedate'] ?></div>
+				<?php endif; ?>
 				<div class="description"><?= $item['info'] ?></div>
 			</div>
 		</div>

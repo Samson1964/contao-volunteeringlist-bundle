@@ -89,7 +89,7 @@ class Volunteeringlist extends \ContentElement
 							'birthday'          => $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->birthday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->birthday),
 							'deathday'          => $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->deathday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->deathday),
 							'playerbase_url'    => $objItems->spielerregister_id ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getPlayerlink($objItems->spielerregister_id) : false,
-							'lifedate'          => self::getLivedata($objItems, $objRegister),
+							'lifedate'          => $objItems->viewLifedates ? self::getLivedata($objItems, $objRegister) : false,
 							'fromDate'          => \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->fromDate),
 							'toDate'            => \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->toDate),
 							'fromto'            => self::getPeriod($objItems),

@@ -7,23 +7,16 @@
  */
 
 // Listenansicht
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['new'][0] = 'Neuer Eintrag';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['new'][1] = 'Neuen Eintrag anlegen';
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['new'] = array('Neuer Eintrag', 'Neuen Eintrag anlegen');
 
 // Eingabemaske
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['person_legend'] = 'Personenangaben';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['name'][0] = 'Name';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['name'][1] = 'Name der Person';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['birthday'][0] = 'Geburtsdatum';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['birthday'][1] = 'Format: TT.MM.JJJJ (Wird bei Zuweisung Spielerregister überschrieben!)';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['birthplace'][0] = 'Geburtsort';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['birthplace'][1] = 'Geburtsort (Wird bei Zuweisung Spielerregister überschrieben!)';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['deathday'][0] = 'Sterbedatum';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['deathday'][1] = 'Format: TT.MM.JJJJ (Wird bei Zuweisung Spielerregister überschrieben!)';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['deathplace'][0] = 'Sterbeort';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['deathplace'][1] = 'Sterbeort (Wird bei Zuweisung Spielerregister überschrieben!)';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['singleSRC'][0] = 'Bild';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['singleSRC'][1] = 'Fügen Sie ein Bild hinzu, welches zur Amtszeit paßt.';
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['name'] = array('Name', 'Name der Person');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['birthday'] = array('Geburtsdatum', 'Format: TT.MM.JJJJ (Wird bei Zuweisung Spielerregister überschrieben!)');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['birthplace'] = array('Geburtsort', 'Geburtsort (Wird bei Zuweisung Spielerregister überschrieben!)');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['deathday'] = array('Sterbedatum', 'Format: TT.MM.JJJJ (Wird bei Zuweisung Spielerregister überschrieben!)');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['deathplace'] = array('Sterbeort', 'Sterbeort (Wird bei Zuweisung Spielerregister überschrieben!)');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['singleSRC'] = array('Bild', 'Fügen Sie ein Bild hinzu, welches zur Amtszeit paßt.');
 
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['function_legend'] = 'Amtszeit';
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['fromDate'] = array('Von', 'Format: TT.MM.JJJJ');
@@ -37,4 +30,5 @@ $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['spielerregister_id'] = array('
 
 // Standardelemente
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['publish_legend'] = 'Veröffentlichung';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['published'] = array('Veröffentlicht', 'Der Datensatz wird auf der Webseite angezeigt');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['viewLifedates'] = array('Lebensdaten anzeigen', 'Lebensdaten im Frontend anzeigen');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['published'] = array('Veröffentlicht', 'Der Datensatz wird im Frontend angezeigt');

@@ -101,7 +101,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('protected'),
-		'default'                     => '{person_legend},name,birthday,birthplace,deathday,deathplace,singleSRC;{function_legend},fromDate,toDate,fromDate_unknown,toDate_unknown,info;{register_legend},spielerregister_id;{publish_legend},published'
+		'default'                     => '{person_legend},name,birthday,birthplace,deathday,deathplace,singleSRC;{function_legend},fromDate,toDate,fromDate_unknown,toDate_unknown,info;{register_legend},spielerregister_id;{publish_legend},viewLifedates,published'
 	),
 
 	// Subpalettes
@@ -335,6 +335,21 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'explanation'             => 'insertTags',
 			'sql'                     => "mediumtext NULL"
 		),
+		'viewLifedates' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['viewLifedates'],
+			'exclude'                 => true,
+			'filter'                  => true,
+			'flag'                    => 1,
+			'default'                 => true,
+			'inputType'               => 'checkbox',
+			'eval'                    => array
+			(
+				'tl_class'            => 'w50',
+				'doNotCopy'           => true
+			),
+			'sql'                     => "char(1) NOT NULL default '1'"
+		),
 		'published' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['published'],
@@ -345,6 +360,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'inputType'               => 'checkbox',
 			'eval'                    => array
 			(
+				'tl_class'            => 'w50',
 				'doNotCopy'           => true
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
