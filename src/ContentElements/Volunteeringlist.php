@@ -66,6 +66,10 @@ class Volunteeringlist extends \ContentElement
 							$objRegister = $this->Database->prepare('SELECT * FROM tl_spielerregister WHERE id = ?')
 							                    ->execute($objItems->spielerregister_id);
 						}
+						else
+						{
+							$objRegister = NULL;
+						}
 
 						// Bild extrahieren
 						if($objItems->singleSRC)

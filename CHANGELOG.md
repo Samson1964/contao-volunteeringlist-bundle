@@ -1,5 +1,9 @@
 # Funktionärsliste Changelog
 
+## Version 2.1.2 (2021-02-16)
+
+* Fix: Spielerregisterdaten bleiben im Speicher und beeinflussen nachfolgende Datensätze
+
 ## Version 2.1.1 (2020-12-14)
 
 * Fix: Alternatives Template ist falsch verlinkt in Volunteeringlist.php (mit der Checkbox)
