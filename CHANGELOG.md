@@ -1,5 +1,9 @@
 # Funktionärsliste Changelog
 
+## Version 2.1.3 (2021-09-08)
+
+* Fix: 1366 Incorrect integer value: 'text' for column 'volunteeringlist'
+
 ## Version 2.1.2 (2021-02-16)
 
 * Fix: Spielerregisterdaten bleiben im Speicher und beeinflussen nachfolgende Datensätze
