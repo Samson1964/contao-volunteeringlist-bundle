@@ -1,5 +1,9 @@
 # Funktionärsliste Changelog
 
+## Version 2.2.0 (2023-06-18)
+
+* Add: PHP 8 in composer.json als erlaubt eingetragen
+
 ## Version 2.1.3 (2021-09-08)
 
 * Fix: 1366 Incorrect integer value: 'text' for column 'volunteeringlist'
