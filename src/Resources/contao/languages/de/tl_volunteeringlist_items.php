@@ -32,3 +32,6 @@ $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['spielerregister_id'] = array('
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['publish_legend'] = 'Veröffentlichung';
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['viewLifedates'] = array('Lebensdaten anzeigen', 'Lebensdaten im Frontend anzeigen');
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['published'] = array('Veröffentlicht', 'Der Datensatz wird im Frontend angezeigt');
+
+// Sosntige Texte
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['spielerregister'] = 'Person ist verlinkt mit Spielerregister';

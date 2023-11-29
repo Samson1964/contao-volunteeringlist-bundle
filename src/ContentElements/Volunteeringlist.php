@@ -30,9 +30,9 @@ class Volunteeringlist extends \ContentElement
 			if($objListe)
 			{
 				// Voreinstellungen Bilder und CSS laden
-				$defaultImage = $GLOBALS['TL_CONFIG']['volunteeringlist_defaultImage'];
-				$imageSize = $GLOBALS['TL_CONFIG']['volunteeringlist_imageSize'];
-				if($GLOBALS['TL_CONFIG']['volunteeringlist_css']) $GLOBALS['TL_CSS'][] = 'bundles/contaovolunteeringlist/default.css';
+				$defaultImage = &$GLOBALS['TL_CONFIG']['volunteeringlist_defaultImage'];
+				$imageSize = &$GLOBALS['TL_CONFIG']['volunteeringlist_imageSize'];
+				if(isset($GLOBALS['TL_CONFIG']['volunteeringlist_css'])) $GLOBALS['TL_CSS'][] = 'bundles/contaovolunteeringlist/default.css';
 
 				if($this->volunteeringlist_alttemplate)
 				{
@@ -58,6 +58,7 @@ class Volunteeringlist extends \ContentElement
 				{
 
 					$item = array();
+					$i = 0;
 					while($objItems->next())
 					{
 						// Spielerregister laden, wenn ID vorhanden
@@ -81,7 +82,7 @@ class Volunteeringlist extends \ContentElement
 							$objFile = \FilesModel::findByUuid($defaultImage);
 						}
 						$objBild = new \stdClass();
-						\Controller::addImageToTemplate($objBild, array('singleSRC' => $objFile->path, 'size' => unserialize($imageSize)), \Config::get('maxImageWidth'), null, $objFile);
+						if($objFile) \Controller::addImageToTemplate($objBild, array('singleSRC' => $objFile->path, 'size' => unserialize($imageSize)), \Config::get('maxImageWidth'), null, $objFile);
 
 						// Person hinzufügen
 						$item[] = array
@@ -98,12 +99,12 @@ class Volunteeringlist extends \ContentElement
 							'toDate'            => \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->toDate),
 							'fromto'            => self::getPeriod($objItems),
 							'info'              => $objItems->info,
-							'image'             => $objBild->singleSRC,
-							'imageSize'         => $objBild->imgSize,
-							'imageTitle'        => $objBild->imageTitle,
-							'imageAlt'          => $objBild->alt,
-							'imageCaption'      => $objBild->caption,
-							'thumbnail'         => $objBild->src
+							'image'             => &$objBild->singleSRC,
+							'imageSize'         => &$objBild->imgSize,
+							'imageTitle'        => &$objBild->imageTitle,
+							'imageAlt'          => &$objBild->alt,
+							'imageCaption'      => &$objBild->caption,
+							'thumbnail'         => &$objBild->src
 						);
 						$i++;
 					}

@@ -1,5 +1,10 @@
 # Funktionärsliste Changelog
 
+## Version 2.2.1 (2023-11-29)
+
+* Change: tl_volunteeringlist und tl_volunteeringlist_items -> Toggle-Funktion durch Haste-Toggler ersetzt
+* Fix: Anpassungen PHP 8 wegen undefinierter Variablen
+
 ## Version 2.2.0 (2023-06-18)
 
 * Add: PHP 8 in composer.json als erlaubt eingetragen
