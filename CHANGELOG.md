@@ -1,5 +1,9 @@
 # Funktionärsliste Changelog
 
+## Version 2.2.2 (2026-07-29)
+
+* Fix: Warning: Undefined array key "deleteConfirm" bei contao:migrate -> Lesezugriffe auf $GLOBALS['TL_LANG'] in den DCA-Dateien mit `?? null` bzw. `?? array()` abgesichert, da der DcaLoader die Sprachdateien noch nicht geladen hat
+
 ## Version 2.2.1 (2023-11-29)
 
 * Change: tl_volunteeringlist und tl_volunteeringlist_items -> Toggle-Funktion durch Haste-Toggler ersetzt
