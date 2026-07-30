@@ -8,6 +8,7 @@
 
 * Change: tl_volunteeringlist und tl_volunteeringlist_items -> Toggle-Funktion durch Haste-Toggler ersetzt
 * Fix: Anpassungen PHP 8 wegen undefinierter Variablen
+* Change: Beschreibung, Keywords und Homepage in der composer.json ergänzt, damit Packagist das Paket verständlich darstellt und über die Suche auffindbar macht
 
 ## Version 2.2.0 (2023-06-18)
 

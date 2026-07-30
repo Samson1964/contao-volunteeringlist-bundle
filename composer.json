@@ -1,7 +1,14 @@
 {
     "name": "schachbulle/contao-volunteeringlist-bundle",
     "type": "contao-bundle",
-    "description": "DSB-Funktionärsliste für Contao 4",
+    "description": "Verwaltet die Funktionärsliste des Deutschen Schachbundes und gibt sie im Frontend aus.",
+    "keywords": [
+        "contao",
+        "funktionäre",
+        "ehrenamt",
+        "dsb"
+    ],
+    "homepage": "https://github.com/Samson1964/contao-volunteeringlist-bundle",
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
