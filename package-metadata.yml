@@ -1,0 +1,12 @@
+# Quelle fuer die Metadaten im Contao Manager (contao/package-metadata).
+# Aenderungen hier werden von Claude in den Fork uebertragen.
+# Der englische Block wird beim Abgleich ergaenzt, falls er fehlt.
+
+de:
+    title: Funktionärsliste
+    description: >
+        Verwaltet die Funktionärsliste des Deutschen Schachbundes und gibt sie im Frontend aus.
+    keywords:
+        - Funktionäre
+        - Ehrenamt
+        - DSB
