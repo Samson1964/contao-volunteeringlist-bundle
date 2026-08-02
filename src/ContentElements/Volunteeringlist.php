@@ -1,178 +1,255 @@
 <?php
 
-/**
- * Benutzerdefinierten Namespace festlegen, damit die Klasse ersetzt werden kann
+declare(strict_types=1);
+
+/*
+ * Dieser Quelltext gehört zu schachbulle/contao-volunteeringlist-bundle.
+ *
+ * (c) Frank Hoppe
+ *
+ * @license LGPL-3.0-or-later
  */
+
 namespace Schachbulle\ContaoVolunteeringlistBundle\ContentElements;
 
-class Volunteeringlist extends \ContentElement
-{
+use Contao\Config;
+use Contao\ContentElement;
+use Contao\CoreBundle\Image\Studio\Studio;
+use Contao\FilesModel;
+use Contao\StringUtil;
+use Contao\System;
+use Doctrine\DBAL\Connection;
+use Schachbulle\ContaoHelperBundle\Classes\Helper;
+use Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper as SpielerregisterHelper;
+use Schachbulle\ContaoVolunteeringlistBundle\Helper\Personendaten;
 
+/**
+ * Inhaltselement, das eine im Backend gepflegte Funktionärsliste ausgibt.
+ *
+ * Ausgegeben werden alle veröffentlichten Einträge der gewählten Liste in der
+ * im Backend festgelegten Reihenfolge. Ist einem Eintrag ein Datensatz aus dem
+ * Spielerregister zugeordnet, haben dessen Lebensdaten Vorrang vor den im
+ * Eintrag selbst hinterlegten Angaben.
+ */
+class Volunteeringlist extends ContentElement
+{
 	/**
-	 * Template
+	 * Standardtemplate, falls die Liste keines vorgibt
 	 * @var string
 	 */
 	protected $strTemplate = 'ce_volunteeringlist_default';
 
 	/**
-	 * Generate the module
+	 * Baut die Ausgabe des Inhaltselements zusammen.
+	 *
+	 * Zuerst wird die gewählte Liste geladen; existiert sie nicht, bleibt das
+	 * Element leer. Anschließend wird das Template festgelegt — entweder das in
+	 * der Liste hinterlegte oder, wenn im Inhaltselement ausdrücklich gewünscht,
+	 * ein abweichendes. Danach werden die Einträge geladen und als Array an das
+	 * Template übergeben.
+	 *
+	 * Seiteneffekte: Ist in den Einstellungen das mitgelieferte Stylesheet
+	 * aktiviert, wird es in $GLOBALS['TL_CSS'] eingehängt.
+	 *
+	 * Das Template wird über setName() umgestellt und nicht durch ein neu
+	 * erzeugtes FrontendTemplate ersetzt. Andernfalls gingen die von
+	 * ContentElement::generate() bereits gesetzten Daten des Inhaltselements
+	 * verloren — unter anderem die Überschrift.
 	 */
-	protected function compile()
+	protected function compile(): void
 	{
-		// Funktionäre aus Datenbank laden, wenn ID übergeben wurde
-		if($this->volunteeringlist)
+		// Immer setzen, damit die Templates ohne Prüfung darüber laufen können,
+		// auch wenn weiter unten vorzeitig abgebrochen wird
+		$this->Template->items = array();
+
+		$intListe = (int) $this->volunteeringlist;
+
+		if (!$intListe)
 		{
-			// Listentitel laden
-			$objListe = $this->Database->prepare("SELECT * FROM tl_volunteeringlist WHERE id=?")
-			                           ->execute($this->volunteeringlist);
+			return;
+		}
 
-			// Liste gefunden
-			if($objListe)
+		$objDatenbank = $this->getConnection();
+
+		$arrListe = $objDatenbank->fetchAssociative('SELECT * FROM tl_volunteeringlist WHERE id = ?', array($intListe));
+
+		// Die Liste wurde zwischenzeitlich gelöscht
+		if (false === $arrListe)
+		{
+			return;
+		}
+
+		if (Config::get('volunteeringlist_css'))
+		{
+			$GLOBALS['TL_CSS'][] = 'bundles/contaovolunteeringlist/default.css';
+		}
+
+		$strTemplate = $this->volunteeringlist_alttemplate ? (string) $this->volunteeringlist_template : (string) $arrListe['templatefile'];
+
+		if ('' !== $strTemplate)
+		{
+			$this->Template->setName($strTemplate);
+		}
+
+		$this->Template->id = $intListe;
+		$this->Template->title = $arrListe['title'];
+
+		$arrEintraege = $objDatenbank->fetchAllAssociative(
+			'SELECT * FROM tl_volunteeringlist_items WHERE pid = ? AND published = ? ORDER BY sorting',
+			array($intListe, '1')
+		);
+
+		$arrItems = array();
+
+		foreach ($arrEintraege as $i => $arrEintrag)
+		{
+			$arrItems[] = $this->parseEintrag($arrEintrag, $i, $objDatenbank);
+		}
+
+		$this->Template->items = $arrItems;
+	}
+
+	/**
+	 * Bereitet einen einzelnen Listeneintrag für das Template auf.
+	 *
+	 * Ist dem Eintrag ein Spieler aus dem Spielerregister zugeordnet, werden
+	 * dessen Lebensdaten geladen und den im Eintrag gespeicherten vorgezogen.
+	 * So bleiben die Angaben gepflegter Personen an einer Stelle aktuell,
+	 * während Personen ohne Registereintrag weiterhin von Hand erfasst werden
+	 * können.
+	 *
+	 * @param array<string, mixed> $arrEintrag   Datensatz aus tl_volunteeringlist_items
+	 * @param int                  $intIndex     Laufende Nummer ab 0, bestimmt die Zeilenklasse odd/even
+	 * @param Connection           $objDatenbank Offene Verbindung, damit sie nicht je Eintrag neu geholt wird
+	 *
+	 * @return array<string, mixed> Die Template-Variablen des Eintrags
+	 */
+	protected function parseEintrag(array $arrEintrag, int $intIndex, Connection $objDatenbank): array
+	{
+		$intSpieler = (int) ($arrEintrag['spielerregister_id'] ?? 0);
+		$arrRegister = null;
+
+		if ($intSpieler)
+		{
+			$arrRegister = $objDatenbank->fetchAssociative('SELECT * FROM tl_spielerregister WHERE id = ?', array($intSpieler));
+
+			// Der Registereintrag kann gelöscht worden sein, ohne dass die
+			// Zuordnung im Listeneintrag mitgelöscht wurde
+			if (false === $arrRegister)
 			{
-				// Voreinstellungen Bilder und CSS laden
-				$defaultImage = &$GLOBALS['TL_CONFIG']['volunteeringlist_defaultImage'];
-				$imageSize = &$GLOBALS['TL_CONFIG']['volunteeringlist_imageSize'];
-				if(isset($GLOBALS['TL_CONFIG']['volunteeringlist_css'])) $GLOBALS['TL_CSS'][] = 'bundles/contaovolunteeringlist/default.css';
-
-				if($this->volunteeringlist_alttemplate)
-				{
-					// Alternatives Template zuweisen
-					$this->Template = new \FrontendTemplate($this->volunteeringlist_template);
-				}
-				else
-				{
-					// Template aus Listenkonfiguration zuweisen
-					$this->Template = new \FrontendTemplate($objListe->templatefile);
-				}
-
-				// Restliche Variablen zuweisen
-				$this->Template->id = $this->volunteeringlist;
-				$this->Template->title = $objListe->title;
-
-				// Listeneinträge laden
-				$objItems = $this->Database->prepare("SELECT * FROM tl_volunteeringlist_items WHERE pid = ? AND published = ? ORDER BY sorting")
-				                           ->execute($this->volunteeringlist, 1);
-
-				// Einträge der Reihe nach durchgehen
-				if($objItems)
-				{
-
-					$item = array();
-					$i = 0;
-					while($objItems->next())
-					{
-						// Spielerregister laden, wenn ID vorhanden
-						if($objItems->spielerregister_id)
-						{
-							$objRegister = $this->Database->prepare('SELECT * FROM tl_spielerregister WHERE id = ?')
-							                    ->execute($objItems->spielerregister_id);
-						}
-						else
-						{
-							$objRegister = NULL;
-						}
-
-						// Bild extrahieren
-						if($objItems->singleSRC)
-						{
-							$objFile = \FilesModel::findByPk($objItems->singleSRC);
-						}
-						else
-						{
-							$objFile = \FilesModel::findByUuid($defaultImage);
-						}
-						$objBild = new \stdClass();
-						if($objFile) \Controller::addImageToTemplate($objBild, array('singleSRC' => $objFile->path, 'size' => unserialize($imageSize)), \Config::get('maxImageWidth'), null, $objFile);
-
-						// Person hinzufügen
-						$item[] = array
-						(
-							'class'             => bcmod($i,2) ? 'odd' : 'even',
-							'id'                => $i,
-							'name'              => $objItems->name,
-							'register_id'       => $objItems->spielerregister_id,
-							'birthday'          => $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->birthday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->birthday),
-							'deathday'          => $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->deathday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->deathday),
-							'playerbase_url'    => $objItems->spielerregister_id ? \Schachbulle\ContaoSpielerregisterBundle\Klassen\Helper::getPlayerlink($objItems->spielerregister_id) : false,
-							'lifedate'          => $objItems->viewLifedates ? self::getLivedata($objItems, $objRegister) : false,
-							'fromDate'          => \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->fromDate),
-							'toDate'            => \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItems->toDate),
-							'fromto'            => self::getPeriod($objItems),
-							'info'              => $objItems->info,
-							'image'             => &$objBild->singleSRC,
-							'imageSize'         => &$objBild->imgSize,
-							'imageTitle'        => &$objBild->imageTitle,
-							'imageAlt'          => &$objBild->alt,
-							'imageCaption'      => &$objBild->caption,
-							'thumbnail'         => &$objBild->src
-						);
-						$i++;
-					}
-					$this->Template->items = $item;
-				}
+				$arrRegister = null;
+				$intSpieler = 0;
 			}
 		}
-		return;
+
+		// Lebensdaten kommen aus dem Spielerregister, sofern verknüpft
+		$arrQuelle = $arrRegister ?? $arrEintrag;
+
+		$strGeburtstag = (string) Helper::getDate($arrQuelle['birthday'] ?? '');
+		$strSterbetag = (string) Helper::getDate($arrQuelle['deathday'] ?? '');
+		$strVon = (string) Helper::getDate($arrEintrag['fromDate'] ?? '');
+		$strBis = (string) Helper::getDate($arrEintrag['toDate'] ?? '');
+
+		$arrBild = $this->parseBild($arrEintrag['singleSRC'] ?? null);
+
+		// Name und Orte sind Freitextfelder und werden hier maskiert, damit die
+		// Templates sie unverändert ausgeben können. Das Feld 'info' bleibt
+		// bewusst unmaskiert, es wird im Backend mit dem Editor gepflegt und
+		// enthält gewollt Auszeichnungen.
+		return array
+		(
+			'class'          => $intIndex % 2 ? 'odd' : 'even',
+			'id'             => $intIndex,
+			'name'           => StringUtil::specialchars((string) $arrEintrag['name']),
+			'register_id'    => $intSpieler,
+			'birthday'       => $strGeburtstag,
+			'deathday'       => $strSterbetag,
+			'playerbase_url' => $intSpieler ? SpielerregisterHelper::getPlayerlink($intSpieler) : '',
+			'lifedate'       => $arrEintrag['viewLifedates'] ? Personendaten::lebensdaten($strGeburtstag, StringUtil::specialchars((string) ($arrQuelle['birthplace'] ?? '')), $strSterbetag, StringUtil::specialchars((string) ($arrQuelle['deathplace'] ?? ''))) : '',
+			'fromDate'       => $strVon,
+			'toDate'         => $strBis,
+			'fromto'         => Personendaten::amtszeit($strVon, $strBis, (bool) $arrEintrag['fromDate_unknown'], (bool) $arrEintrag['toDate_unknown']),
+			'info'           => $arrEintrag['info'],
+			'image'          => $arrBild['singleSRC'] ?? '',
+			'imageSize'      => $arrBild['imgSize'] ?? '',
+			'imageTitle'     => $arrBild['imageTitle'] ?? '',
+			'imageAlt'       => $arrBild['alt'] ?? '',
+			'imageCaption'   => $arrBild['caption'] ?? '',
+			'thumbnail'      => $arrBild['src'] ?? '',
+		);
 	}
 
 	/**
-	* Gibt die Lebensdaten formatiert zurück
-	* @param mixed
-	* @return mixed
-	*/
-	protected function getLivedata($objItem, $objRegister)
+	 * Erzeugt die Bildangaben eines Eintrags in der eingestellten Größe.
+	 *
+	 * Hat der Eintrag kein eigenes Bild, wird das in den Einstellungen
+	 * hinterlegte Standardbild verwendet. Fehlt auch dieses oder liegt die
+	 * Datei nicht mehr im Dateisystem, kommt ein leeres Array zurück und die
+	 * Templates geben schlicht kein Bild aus.
+	 *
+	 * Aufbereitet wird über das Image-Studio, weil Controller::addImageToTemplate()
+	 * in Contao 5 nicht mehr existiert. Das Studio gibt es in Contao 4.13 und
+	 * Contao 5 gleichermaßen; getLegacyTemplateData() liefert dieselben
+	 * Schlüssel, die die Templates schon bisher erwartet haben.
+	 *
+	 * @param string|null $varUuid Binäre UUID der Bilddatei aus dem Listeneintrag
+	 *
+	 * @return array<string, mixed> Template-Daten des Bildes oder ein leeres Array
+	 */
+	protected function parseBild($varUuid): array
 	{
-		$birthday = $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->birthday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->birthday);
-		$deathday = $objRegister ? \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objRegister->deathday) : \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->deathday);
-		$birthplace = $objRegister ? $objRegister->birthplace : $objItem->birthplace;
-		$deathplace = $objRegister ? $objRegister->deathplace : $objItem->deathplace;
+		$objDatei = null;
 
-		$return = '';
-		$return .= $birthday ? '* '.$birthday : '';
-		$return .= $birthplace ? ($return ? ' '.$birthplace : $birthplace) : '';
-		$return .= $deathday ? ($return ? ', &dagger; '.$deathday : '&dagger; '.$deathday) : '';
-		$return .= $deathplace ? ($return ? ' '.$deathplace : $deathplace) : '';
+		if ($varUuid)
+		{
+			$objDatei = FilesModel::findByUuid($varUuid);
+		}
 
-		return $return;
+		if (null === $objDatei)
+		{
+			$varStandard = Config::get('volunteeringlist_defaultImage');
+
+			if ($varStandard)
+			{
+				$objDatei = FilesModel::findByUuid($varStandard);
+			}
+		}
+
+		if (null === $objDatei)
+		{
+			return array();
+		}
+
+		/** @var Studio $objStudio */
+		$objStudio = System::getContainer()->get('contao.image.studio');
+
+		$objFigure = $objStudio
+			->createFigureBuilder()
+			->fromFilesModel($objDatei)
+			->setSize(StringUtil::deserialize(Config::get('volunteeringlist_imageSize')))
+			->buildIfResourceExists()
+		;
+
+		if (null === $objFigure)
+		{
+			return array();
+		}
+
+		return $objFigure->getLegacyTemplateData();
 	}
 
 	/**
-	* Gibt die Amtszeit formatiert zurück
-	* @param mixed
-	* @return mixed
-	*/
-	protected function getPeriod($objItem)
+	 * Liefert die Doctrine-Verbindung aus dem Container.
+	 *
+	 * Der Umweg über eine eigene Methode hält die Abfragen in compile() lesbar
+	 * und macht deutlich, dass hier bewusst nicht mehr das abgekündigte
+	 * $this->Database verwendet wird: In Contao 5 sind über System::import()
+	 * geladene Objekte veraltet und verschwinden in Contao 6.
+	 *
+	 * @return Connection Die Standardverbindung der Contao-Installation
+	 */
+	protected function getConnection(): Connection
 	{
-		// Artikel als Einleitung für Amtszeitbeginn festlegen
-		$von = $objItem->fromDate_unknown ? 'ca. ' : '';
-		// Artikel als Einleitung für Amtszeitende festlegen
-		$bis = $objItem->toDate_unknown ? 'ca. ' : '';
-		$between = '';
-
-		// Von/Bis-Artikel festlegen
-		if($objItem->fromDate && $objItem->toDate)
-		{
-			$von .= \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->fromDate);
-			$bis .= \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->toDate);
-			$between = ' - ';
-		}
-		elseif($objItem->fromDate && !$objItem->toDate)
-		{
-			$von = 'seit '.$von.\Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->fromDate);
-			$bis = '';
-		}
-		elseif(!$objItem->fromDate && $objItem->toDate)
-		{
-			$von = '';
-			$bis = 'bis '.$bis.\Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($objItem->toDate);
-		}
-		else
-		{
-			$von = '';
-			$bis = '';
-		}
-
-		return $von.$between.$bis;
+		return System::getContainer()->get('database_connection');
 	}
-
 }

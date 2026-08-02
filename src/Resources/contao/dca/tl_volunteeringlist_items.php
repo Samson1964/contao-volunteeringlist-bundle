@@ -1,25 +1,27 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * Dieser Quelltext gehört zu schachbulle/contao-volunteeringlist-bundle.
  *
- * Copyright (c) 2005-2014 Leo Feyer
+ * (c) Frank Hoppe
  *
- * @package News
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
+use Contao\Backend;
+use Contao\DC_Table;
+use Contao\StringUtil;
+use Schachbulle\ContaoHelperBundle\Classes\Helper;
+
 /**
- * Table tl_volunteeringlist_items
+ * Tabelle tl_volunteeringlist_items — die einzelnen Amtsträger einer Liste
  */
 $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 (
-
 	// Config
 	'config' => array
 	(
-		'dataContainer'               => 'Table',
+		'dataContainer'               => DC_Table::class,
 		'ptable'                      => 'tl_volunteeringlist',
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
@@ -60,46 +62,39 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['edit'],
 				'href'                => 'act=edit',
-				'icon'                => 'edit.gif'
+				'icon'                => 'edit.svg'
 			),
 			'copy' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
-				'icon'                => 'copy.gif'
+				'icon'                => 'copy.svg'
 			),
 			'cut' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
-				'icon'                => 'cut.gif'
+				'icon'                => 'cut.svg'
 			),
 			'delete' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['delete'],
 				'href'                => 'act=delete',
-				'icon'                => 'delete.gif',
-				'attributes'          => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"'
+				'icon'                => 'delete.svg',
+				'attributes'          => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '') . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['toggle'],
-				'attributes'           => 'onclick="Backend.getScrollOffset()"',
-				'haste_ajax_operation' => array
-				(
-					'field'            => 'published',
-					'options'          => array
-					(
-						array('value' => '', 'icon' => 'invisible.svg'),
-						array('value' => '1', 'icon' => 'visible.svg'),
-					),
-				),
+				'href'                => 'act=toggle&amp;field=published',
+				'icon'                => 'visible.svg',
+				'attributes'          => 'onclick="Backend.getScrollOffset()"'
 			),
 			'show' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['show'],
 				'href'                => 'act=show',
-				'icon'                => 'show.gif'
+				'icon'                => 'show.svg'
 			)
 		)
 	),
@@ -107,14 +102,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('protected'),
 		'default'                     => '{person_legend},name,birthday,birthplace,deathday,deathplace,singleSRC;{function_legend},fromDate,toDate,fromDate_unknown,toDate_unknown,info;{register_legend},spielerregister_id;{publish_legend},viewLifedates,published'
-	),
-
-	// Subpalettes
-	'subpalettes' => array
-	(
-		'protected'                   => 'groups'
 	),
 
 	// Fields
@@ -168,11 +156,11 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'getDate')
+				array(Helper::class, 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'putDate')
+				array(Helper::class, 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
 		),
@@ -205,11 +193,11 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'getDate')
+				array(Helper::class, 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'putDate')
+				array(Helper::class, 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
 		),
@@ -242,11 +230,11 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'getDate')
+				array(Helper::class, 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'putDate')
+				array(Helper::class, 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
 		),
@@ -259,6 +247,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'eval'                    => array
 			(
 				'tl_class'            => 'w50',
+				'isBoolean'           => true
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
@@ -276,11 +265,11 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			),
 			'load_callback'           => array
 			(
-				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'getDate')
+				array(Helper::class, 'getDate')
 			),
 			'save_callback' => array
 			(
-				array('Schachbulle\ContaoHelperBundle\Classes\Helper', 'putDate')
+				array(Helper::class, 'putDate')
 			),
 			'sql'                     => "int(8) unsigned NOT NULL default '0'"
 		),
@@ -293,6 +282,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'eval'                    => array
 			(
 				'tl_class'            => 'w50',
+				'isBoolean'           => true
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
@@ -305,7 +295,10 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			(
 				'filesOnly'           => true,
 				'fieldType'           => 'radio',
-				'extensions'          => Config::get('validImageTypes'),
+				// Platzhalter für den Container-Parameter, den Contao beim
+				// Aufbau des Widgets auflöst. Config::get('validImageTypes')
+				// gilt seit Contao 4.12 als veraltet.
+				'extensions'          => '%contao.image.valid_extensions%',
 				'tl_class'            => 'clr'
 			),
 			'sql'                     => "binary(16) NULL",
@@ -353,6 +346,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'eval'                    => array
 			(
 				'tl_class'            => 'w50',
+				'isBoolean'           => true,
 				'doNotCopy'           => true
 			),
 			'sql'                     => "char(1) NOT NULL default '1'"
@@ -360,6 +354,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 		'published' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['published'],
+			'toggle'                  => true, // Aktiviert den Contao-eigenen Schnellschalter in der Übersicht
 			'exclude'                 => true,
 			'filter'                  => true,
 			'flag'                    => 1,
@@ -368,6 +363,7 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 			'eval'                    => array
 			(
 				'tl_class'            => 'w50',
+				'isBoolean'           => true,
 				'doNotCopy'           => true
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
@@ -375,47 +371,43 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist_items'] = array
 	)
 );
 
-
 /**
- * Class tl_volunteeringlist_items
- *
- * Provide miscellaneous methods that are used by the data configuration array.
- * @copyright  Leo Feyer 2005-2014
- * @author     Leo Feyer <https://contao.org>
- * @package    News
+ * Stellt die Rückruffunktionen der Tabelle tl_volunteeringlist_items bereit.
  */
 class tl_volunteeringlist_items extends Backend
 {
-
-	var $nummer = 0;
-
 	/**
-	 * Import the back end user object
+	 * Erzeugt die Zeilenbeschriftung eines Eintrags in der Übersicht.
+	 *
+	 * Ausgegeben wird die Amtszeit gefolgt vom Namen; unbekannte Datumsangaben
+	 * erscheinen als Fragezeichen, damit Lücken sofort auffallen. Ist der
+	 * Eintrag mit dem Spielerregister verknüpft, weist ein kleines Symbol
+	 * darauf hin, dass die Lebensdaten von dort kommen.
+	 *
+	 * Name und Symboltitel werden maskiert, weil der Name als Freitext erfasst
+	 * wird und sonst Auszeichnungen in die Übersicht einschleusen könnte.
+	 *
+	 * @param array $arrRow Der Datensatz der Zeile
+	 *
+	 * @return string Die Beschriftung als HTML
 	 */
-	public function __construct()
+	public function listPersons($arrRow): string
 	{
-		parent::__construct();
-		$this->import('BackendUser', 'User');
-	}
+		$strVon = $arrRow['fromDate'] ? Helper::getDate($arrRow['fromDate']) : '?';
+		$strBis = $arrRow['toDate'] ? Helper::getDate($arrRow['toDate']) : '?';
 
-	/**
-	 * Return the link picker wizard
-	 * @param \DataContainer
-	 * @return string
-	 */
-	public function pagePicker(DataContainer $dc)
-	{
-		return ' <a href="contao/page.php?do=' . Input::get('do') . '&amp;table=' . $dc->table . '&amp;field=' . $dc->field . '&amp;value=' . str_replace(array('{{link_url::', '}}'), '', $dc->value) . '" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['pagepicker']) . '" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':765,\'title\':\'' . specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['MOD']['page'][0])) . '\',\'url\':this.href,\'id\':\'' . $dc->field . '\',\'tag\':\'ctrl_'. $dc->field . ((Input::get('act') == 'editAll') ? '_' . $dc->id : '') . '\',\'self\':this});return false">' . Image::getHtml('pickpage.gif', $GLOBALS['TL_LANG']['MSC']['pagepicker'], 'style="vertical-align:top;cursor:pointer"') . '</a>';
-	}
+		$strLabel = '<div class="tl_content_left">' . $strVon . ' - ' . $strBis;
 
-	public function listPersons($arrRow)
-	{
-		$temp = '<div class="tl_content_left">';
-		($arrRow['fromDate']) ? $temp .= \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($arrRow['fromDate']) . ' - ' : $temp .= '? - ';
-		($arrRow['toDate']) ? $temp .= \Schachbulle\ContaoHelperBundle\Classes\Helper::getDate($arrRow['toDate']) : $temp .= '?';
-		if($arrRow['name']) $temp .= ' <b>' . $arrRow['name'] . '</b>';
-		if($arrRow['spielerregister_id']) $temp .= ' <img src="bundles/contaovolunteeringlist/images/spielerregister.png" title="'.$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['spielerregister'].'">';
-		return $temp.'</div>';
-	}
+		if ($arrRow['name'])
+		{
+			$strLabel .= ' <b>' . StringUtil::specialchars($arrRow['name']) . '</b>';
+		}
 
+		if ($arrRow['spielerregister_id'])
+		{
+			$strLabel .= ' <img src="bundles/contaovolunteeringlist/images/spielerregister.png" alt="" title="' . StringUtil::specialcharsAttribute($GLOBALS['TL_LANG']['tl_volunteeringlist_items']['spielerregister'] ?? '') . '">';
+		}
+
+		return $strLabel . '</div>';
+	}
 }

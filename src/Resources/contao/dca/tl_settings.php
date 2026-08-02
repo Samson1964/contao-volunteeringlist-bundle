@@ -1,25 +1,26 @@
-<?php if (!defined('TL_ROOT')) die('You cannot access this file directly!');
+<?php
 
-/**
- * Contao Open Source CMS
+/*
+ * Dieser Quelltext gehört zu schachbulle/contao-volunteeringlist-bundle.
  *
- * Copyright (C) 2005-2013 Leo Feyer
+ * (c) Frank Hoppe
  *
- * @package   fen
- * @author    Frank Hoppe
- * @license   GNU/LGPL
- * @copyright Frank Hoppe 2013
+ * @license LGPL-3.0-or-later
  */
 
+use Contao\BackendUser;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\Validator;
+
 /**
- * palettes
+ * Palette
  */
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] .= ';{volunteeringlist_legend:hide},volunteeringlist_defaultImage,volunteeringlist_imageSize,volunteeringlist_css';
 
 /**
- * fields
+ * Felder
  */
-
 $GLOBALS['TL_DCA']['tl_settings']['fields']['volunteeringlist_defaultImage'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_defaultImage'],
@@ -29,6 +30,19 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['volunteeringlist_defaultImage'] = a
 		'filesOnly'           => true,
 		'fieldType'           => 'radio',
 		'tl_class'            => 'w50'
+	),
+	// Der Dateibaum liefert die UUID als 16 Byte Binärwert. Die Einstellungen
+	// landen aber in system/config/localconfig.php, also in einer PHP-Datei,
+	// die den Binärwert nicht unbeschadet übersteht: Nullbytes und Backslashes
+	// gehen dabei verloren, und FilesModel::findByUuid() findet die Datei
+	// später nicht mehr. Deshalb wird hier in die lesbare Schreibweise
+	// umgewandelt, die findByUuid() ebenso versteht.
+	'save_callback' => array
+	(
+		static function ($varValue)
+		{
+			return Validator::isBinaryUuid($varValue) ? StringUtil::binToUuid($varValue) : $varValue;
+		}
 	)
 );
 
@@ -39,12 +53,16 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['volunteeringlist_imageSize'] = arra
 	'inputType'               => 'imageSize',
 	'reference'               => &$GLOBALS['TL_LANG']['MSC'],
 	'eval'                    => array('rgxp'=>'natural', 'includeBlankOption'=>true, 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'),
+	// Liefert die im System hinterlegten Bildgrößen als Auswahlliste, beschränkt
+	// auf die Größen, die der angemeldete Benutzer sehen darf. Der Dienst heißt
+	// seit Contao 5 "contao.image.sizes"; unter Contao 4.13 ist
+	// "contao.image.image_sizes" nur noch ein Alias darauf, der alte Name führt
+	// in Contao 5 dagegen zu einem Fehler.
 	'options_callback' => static function ()
 	{
-		return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
-	},
-	'sql'                     => "varchar(255) NOT NULL default ''"
-); 
+		return System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance());
+	}
+);
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['volunteeringlist_css'] = array
 (
@@ -53,5 +71,6 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['volunteeringlist_css'] = array
 	'eval'          => array
 	(
 		'tl_class'  => 'w50 clr',
+		'isBoolean' => true
 	)
 );

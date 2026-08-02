@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # Das Inhaltselement wird klassisch über $GLOBALS['TL_CTE'] eingebunden, das
+    # Contao 4.13 wie Contao 5 unterstützt, und braucht deshalb keinen Service.
+    #
+    # Der frühere _instanceof-Block für ContainerAwareInterface ist entfallen:
+    # Die Schnittstelle wurde in Symfony 7 entfernt und ließ den Container unter
+    # Contao 5 schon beim Kompilieren scheitern.

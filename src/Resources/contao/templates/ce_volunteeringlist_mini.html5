@@ -7,20 +7,18 @@
 			<th>Zeitraum</th>
 			<th>Amtsinhaber</th>
 		</tr>
-		<?php if($this->items): ?>
-			<?php foreach($this->items as $item): ?>
-				<tr>
-					<td><?= $item['fromto'] ?></td>
-					<td>
-					<?php if($item['register_id']): ?>
-						<a href="<?= $item['playerbase_url'] ?>"><?= $item['name'] ?></a>
-					<?php else: ?>
-						<?= $item['name'] ?>
-					<?php endif; ?>
-					</td>
-				</tr>
-			<?php endforeach; ?>
-		<?php endif; ?>
+		<?php foreach ($this->items as $item): ?>
+			<tr class="<?= $item['class'] ?>">
+				<td><?= $item['fromto'] ?></td>
+				<td>
+				<?php if ($item['playerbase_url']): ?>
+					<a href="<?= $item['playerbase_url'] ?>"><?= $item['name'] ?></a>
+				<?php else: ?>
+					<?= $item['name'] ?>
+				<?php endif; ?>
+				</td>
+			</tr>
+		<?php endforeach; ?>
 	</table>
 
 <?php $this->endblock(); ?>

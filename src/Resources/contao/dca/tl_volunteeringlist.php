@@ -1,26 +1,30 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * Dieser Quelltext gehört zu schachbulle/contao-volunteeringlist-bundle.
  *
- * Copyright (c) 2005-2014 Leo Feyer
+ * (c) Frank Hoppe
  *
- * @package News
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
+use Contao\Backend;
+use Contao\CoreBundle\Security\ContaoCorePermissions;
+use Contao\DataContainer;
+use Contao\DC_Table;
+use Contao\Image;
+use Contao\StringUtil;
+use Contao\System;
 
 /**
- * Table tl_volunteeringlist
+ * Tabelle tl_volunteeringlist — die Funktionärslisten selbst
  */
 $GLOBALS['TL_DCA']['tl_volunteeringlist'] = array
 (
-
 	// Config
 	'config' => array
 	(
-		'dataContainer'               => 'Table',
+		'dataContainer'               => DC_Table::class,
 		'ctable'                      => array('tl_volunteeringlist_items'),
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
@@ -65,49 +69,40 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist']['edit'],
 				'href'                => 'table=tl_volunteeringlist_items',
-				'icon'                => 'edit.gif'
+				'icon'                => 'edit.svg'
 			),
 			'editheader' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist']['editheader'],
 				'href'                => 'act=edit',
-				'icon'                => 'header.gif',
+				'icon'                => 'header.svg',
 				'button_callback'     => array('tl_volunteeringlist', 'editHeader')
 			),
 			'copy' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist']['copy'],
 				'href'                => 'act=copy',
-				'icon'                => 'copy.gif',
-				'button_callback'     => array('tl_volunteeringlist', 'copyArchive')
+				'icon'                => 'copy.svg'
 			),
 			'delete' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist']['delete'],
 				'href'                => 'act=delete',
-				'icon'                => 'delete.gif',
-				'attributes'          => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_volunteeringlist', 'deleteArchive')
+				'icon'                => 'delete.svg',
+				'attributes'          => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '') . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist']['toggle'],
-				'attributes'           => 'onclick="Backend.getScrollOffset()"',
-				'haste_ajax_operation' => array
-				(
-					'field'            => 'published',
-					'options'          => array
-					(
-						array('value' => '', 'icon' => 'invisible.svg'),
-						array('value' => '1', 'icon' => 'visible.svg'),
-					),
-				),
+				'href'                => 'act=toggle&amp;field=published',
+				'icon'                => 'visible.svg',
+				'attributes'          => 'onclick="Backend.getScrollOffset()"'
 			),
 			'show' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_volunteeringlist']['show'],
 				'href'                => 'act=show',
-				'icon'                => 'show.gif'
+				'icon'                => 'show.svg'
 			)
 		)
 	),
@@ -144,12 +139,13 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist'] = array
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'options_callback'        => array('tl_volunteeringlist', 'getTemplates'),
-			'eval'                    => array('tl_class'=>'w50'),
+			'eval'                    => array('tl_class'=>'w50', 'includeBlankOption'=>true),
 			'sql'                     => "varchar(64) NOT NULL default ''"
-		), 
+		),
 		'published' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_volunteeringlist']['published'],
+			'toggle'                  => true, // Aktiviert den Contao-eigenen Schnellschalter in der Übersicht
 			'exclude'                 => true,
 			'filter'                  => true,
 			'flag'                    => 1,
@@ -157,127 +153,67 @@ $GLOBALS['TL_DCA']['tl_volunteeringlist'] = array
 			'inputType'               => 'checkbox',
 			'eval'                    => array
 			(
-				'doNotCopy'           => true
+				'doNotCopy'           => true,
+				'isBoolean'           => true
 			),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
 	)
 );
 
-
 /**
- * Class tl_volunteeringlist
- *
- * Provide miscellaneous methods that are used by the data configuration array.
- * @copyright  Leo Feyer 2005-2014
- * @author     Leo Feyer <https://contao.org>
- * @package    News
+ * Stellt die Rückruffunktionen der Tabelle tl_volunteeringlist bereit.
  */
 class tl_volunteeringlist extends Backend
 {
-
 	/**
-	 * Import the back end user object
+	 * Liefert die Templates, die für eine Liste ausgewählt werden können.
+	 *
+	 * Gesucht wird nach dem Präfix 'ce_volunteeringlist_', also nach allen
+	 * Templates des Inhaltselements. Die frühere Fallunterscheidung über die
+	 * Konstanten VERSION und BUILD ist entfallen: Beide sind in Contao 5 nicht
+	 * mehr definiert, und die damit abgefragte Zweitparameter-Variante von
+	 * getTemplateGroup() gab es ohnehin nur bis Contao 4.7.
+	 *
+	 * @param DataContainer|null $dc Wird von Contao übergeben, hier nicht benötigt
+	 *
+	 * @return array<string, string> Templatename => Templatename
 	 */
-	public function __construct()
+	public function getTemplates($dc = null): array
 	{
-		parent::__construct();
-		$this->import('BackendUser', 'User');
-	}
-
-	public function getTemplates($dc)
-	{
-		if(version_compare(VERSION.BUILD, '2.9.0', '>=') && version_compare(VERSION.BUILD, '4.8.0', '<'))
-		{
-			// Den 2. Parameter gibt es nur ab Conato 2.9 bis 4.7
-			return $this->getTemplateGroup('ce_volunteeringlist_', $dc->activeRecord->id);
-		}
-		else
-		{
-			return $this->getTemplateGroup('ce_volunteeringlist_');
-		}
-	} 
-
-	/**
-	 * Return the edit header button
-	 * @param array
-	 * @param string
-	 * @param string
-	 * @param string
-	 * @param string
-	 * @param string
-	 * @return string
-	 */
-	public function editHeader($row, $href, $label, $title, $icon, $attributes)
-	{
-		return ($this->User->isAdmin || count(preg_grep('/^tl_volunteeringlist::/', $this->User->alexf)) > 0) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.gif$/i', '_.gif', $icon)).' ';
-	}
-
-
-	/**
-	 * Return the copy archive button
-	 * @param array
-	 * @param string
-	 * @param string
-	 * @param string
-	 * @param string
-	 * @param string
-	 * @return string
-	 */
-	public function copyArchive($row, $href, $label, $title, $icon, $attributes)
-	{
-		return ($this->User->isAdmin || $this->User->hasAccess('create', 'newp')) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.gif$/i', '_.gif', $icon)).' ';
-	}
-
-
-	/**
-	 * Return the delete archive button
-	 * @param array
-	 * @param string
-	 * @param string
-	 * @param string
-	 * @param string
-	 * @param string
-	 * @return string
-	 */
-	public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
-	{
-		return ($this->User->isAdmin || $this->User->hasAccess('delete', 'newp')) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.gif$/i', '_.gif', $icon)).' ';
+		return $this->getTemplateGroup('ce_volunteeringlist_');
 	}
 
 	/**
-	 * Generiert automatisch ein Alias aus dem Titel
-	 * @param mixed
-	 * @param \DataContainer
-	 * @return string
-	 * @throws \Exception
+	 * Erzeugt den Knopf zum Bearbeiten der Listeneigenschaften.
+	 *
+	 * Der Knopf wird ausgegraut, wenn dem angemeldeten Benutzer für keines der
+	 * Felder dieser Tabelle ein Bearbeitungsrecht eingeräumt wurde. Andernfalls
+	 * könnte er die Maske zwar öffnen, aber nichts darin ändern.
+	 *
+	 * Geprüft wird über den Security-Helper statt wie früher von Hand über
+	 * $this->User->alexf. Das ist der in Contao 4.13 wie in Contao 5 vorgesehene
+	 * Weg und erspart den über System::import() geladenen Benutzer, der in
+	 * Contao 5 als veraltet gilt.
+	 *
+	 * @param array  $row        Der Datensatz der Zeile
+	 * @param string $href       Die Zieladresse der Schaltfläche
+	 * @param string $label      Beschriftung für das Symbol
+	 * @param string $title      Text für das title-Attribut
+	 * @param string $icon       Dateiname des Symbols
+	 * @param string $attributes Zusätzliche HTML-Attribute
+	 *
+	 * @return string Der fertige HTML-Verweis oder das ausgegraute Symbol
 	 */
-	public function generateAlias($varValue, DataContainer $dc)
+	public function editHeader($row, $href, $label, $title, $icon, $attributes): string
 	{
-		$autoAlias = false;
+		$objSecurity = System::getContainer()->get('security.helper');
 
-		// Generate alias if there is none
-		if ($varValue == '')
+		if (!$objSecurity->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_volunteeringlist'))
 		{
-			$autoAlias = true;
-			$varValue = standardize(\StringUtil::restoreBasicEntities($dc->activeRecord->title));
+			return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
 		}
 
-		$objAlias = $this->Database->prepare("SELECT id FROM tl_volunteeringlist WHERE alias=?")
-		                           ->execute($varValue);
-
-		// Check whether the news alias exists
-		if ($objAlias->numRows > 1 && !$autoAlias)
-		{
-			throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
-		}
-
-		// Add ID to alias
-		if ($objAlias->numRows && $autoAlias)
-		{
-			$varValue .= '-' . $dc->id;
-		}
-
-		return $varValue;
-	} 
+		return '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . StringUtil::specialcharsAttribute($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
+	}
 }

@@ -1,24 +1,21 @@
-<?php if (!defined('TL_ROOT')) die('You cannot access this file directly!');
+<?php
 
-/**
- * Contao Open Source CMS
+/*
+ * Dieser Quelltext gehört zu schachbulle/contao-volunteeringlist-bundle.
  *
- * Copyright (C) 2005-2013 Leo Feyer
+ * (c) Frank Hoppe
  *
- * @package   fen
- * @author    Frank Hoppe
- * @license   GNU/LGPL
- * @copyright Frank Hoppe 2013
+ * @license LGPL-3.0-or-later
  */
 
 /**
- * legends
+ * Legenden
  */
-$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_legend']                      = 'Funktionärslisten';
+$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_legend'] = 'Funktionärslisten';
 
 /**
- * fields
+ * Felder
  */
-$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_defaultImage'] = array('Standardbild', 'Standardbild für Funktionäre');
-$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_imageSize'] = array('Bildgröße', 'Größe der Funktionärsbilder');
-$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_css'] = array('Standard-CSS', 'Standard-CSS einbinden');
+$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_defaultImage'] = array('Standardbild', 'Bild für Funktionäre ohne eigenes Bild');
+$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_imageSize'] = array('Bildgröße', 'Größe, auf die die Funktionärsbilder gebracht werden');
+$GLOBALS['TL_LANG']['tl_settings']['volunteeringlist_css'] = array('Standard-CSS', 'Das mitgelieferte Stylesheet im Frontend einbinden');

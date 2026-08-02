@@ -1,15 +1,16 @@
-<?php 
+<?php
 
-/**
- * Contao Open Source CMS
- * Copyright (C) 2005-2014 Leo Feyer
+/*
+ * Dieser Quelltext gehört zu schachbulle/contao-volunteeringlist-bundle.
  *
+ * (c) Frank Hoppe
+ *
+ * @license LGPL-3.0-or-later
  */
 
-// Listenansicht
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['new'] = array('Neuer Eintrag', 'Neuen Eintrag anlegen');
-
-// Eingabemaske
+/**
+ * Eingabemaske
+ */
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['person_legend'] = 'Personenangaben';
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['name'] = array('Name', 'Name der Person');
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['birthday'] = array('Geburtsdatum', 'Format: TT.MM.JJJJ (Wird bei Zuweisung Spielerregister überschrieben!)');
@@ -19,19 +20,31 @@ $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['deathplace'] = array('Sterbeor
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['singleSRC'] = array('Bild', 'Fügen Sie ein Bild hinzu, welches zur Amtszeit paßt.');
 
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['function_legend'] = 'Amtszeit';
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['fromDate'] = array('Von', 'Format: TT.MM.JJJJ');
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['fromDate_unknown'] = array('Datum ungeklärt', 'Das angegebene Von-Datum ist unklar');
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['toDate'] = array('Bis', 'Format: TT.MM.JJJJ');
-$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['toDate_unknown'] = array('Datum ungeklärt', 'Das angegebene Bis-Datum ist unklar');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['fromDate'] = array('Von', 'Format: TT.MM.JJJJ, MM.JJJJ oder JJJJ');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['fromDate_unknown'] = array('Datum ungeklärt', 'Das angegebene Von-Datum ist unklar und wird mit "ca." ausgegeben');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['toDate'] = array('Bis', 'Format: TT.MM.JJJJ, MM.JJJJ oder JJJJ');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['toDate_unknown'] = array('Datum ungeklärt', 'Das angegebene Bis-Datum ist unklar und wird mit "ca." ausgegeben');
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['info'] = array('Informationen', 'Informationen zur Amtsperiode');
 
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['register_legend'] = 'Spielerregister';
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['spielerregister_id'] = array('Zugewiesener Spieler', 'Die Lebensdaten (Geburtstag/-ort und Sterbetag/-ort) werden von hier übernommen. Die o.g. Lebensdaten werden ignoriert.');
 
-// Standardelemente
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['publish_legend'] = 'Veröffentlichung';
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['viewLifedates'] = array('Lebensdaten anzeigen', 'Lebensdaten im Frontend anzeigen');
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['published'] = array('Veröffentlicht', 'Der Datensatz wird im Frontend angezeigt');
 
-// Sosntige Texte
+/**
+ * Schaltflächen
+ */
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['new'] = array('Neuer Eintrag', 'Neuen Eintrag anlegen');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['edit'] = array('Eintrag bearbeiten', 'Den Eintrag ID %s bearbeiten');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['copy'] = array('Eintrag kopieren', 'Den Eintrag ID %s kopieren');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['cut'] = array('Eintrag verschieben', 'Den Eintrag ID %s verschieben');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['delete'] = array('Eintrag löschen', 'Den Eintrag ID %s löschen');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['toggle'] = array('Eintrag veröffentlichen', 'Den Eintrag ID %s veröffentlichen oder verbergen');
+$GLOBALS['TL_LANG']['tl_volunteeringlist_items']['show'] = array('Eintragsdetails', 'Die Details des Eintrags ID %s anzeigen');
+
+/**
+ * Sonstige Texte
+ */
 $GLOBALS['TL_LANG']['tl_volunteeringlist_items']['spielerregister'] = 'Person ist verlinkt mit Spielerregister';

@@ -1,34 +1,29 @@
-<?php if (!defined('TL_ROOT')) die('You cannot access this file directly!');
+<?php
 
-/**
- * Contao Open Source CMS
+/*
+ * Dieser Quelltext gehört zu schachbulle/contao-volunteeringlist-bundle.
  *
- * Copyright (C) 2005-2013 Leo Feyer
+ * (c) Frank Hoppe
  *
- * @package   bdf
- * @author    Frank Hoppe
- * @license   GNU/LGPL
- * @copyright Frank Hoppe 2014
+ * @license LGPL-3.0-or-later
  */
 
+use Schachbulle\ContaoVolunteeringlistBundle\ContentElements\Volunteeringlist;
+
+/**
+ * Backend-Modul
+ */
 $GLOBALS['BE_MOD']['content']['volunteeringlist'] = array
 (
-	'tables'         => array('tl_volunteeringlist', 'tl_volunteeringlist_items'),
-	'icon'           => 'bundles/contaovolunteeringlist/images/icon.png',
+	'tables' => array('tl_volunteeringlist', 'tl_volunteeringlist_items'),
+	// Contao 4.13 zeigt das Symbol in der Modulnavigation an, Contao 5 nicht mehr
+	'icon'   => 'bundles/contaovolunteeringlist/images/icon.png',
 );
 
 /**
- * -------------------------------------------------------------------------
- * CONTENT ELEMENTS
- * -------------------------------------------------------------------------
+ * Inhaltselement
+ *
+ * Die Registrierung über $GLOBALS['TL_CTE'] wird von Contao 4.13 wie von
+ * Contao 5 unterstützt, ein Fragment-Controller ist dafür nicht nötig.
  */
-$GLOBALS['TL_CTE']['schach']['volunteeringlist'] = 'Schachbulle\ContaoVolunteeringlistBundle\ContentElements\Volunteeringlist';
-
-/**
- * -------------------------------------------------------------------------
- * Voreinstellungen
- * -------------------------------------------------------------------------
- */
-
-$GLOBALS['TL_CONFIG']['volunteeringlist_picWidth'] = 60;
-$GLOBALS['TL_CONFIG']['volunteeringlist_picHeight'] = 80;
+$GLOBALS['TL_CTE']['schach']['volunteeringlist'] = Volunteeringlist::class;

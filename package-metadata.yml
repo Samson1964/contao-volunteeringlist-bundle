@@ -5,8 +5,10 @@
 de:
     title: Funktionärsliste
     description: >
-        Verwaltet die Funktionärsliste des Deutschen Schachbundes und gibt sie im Frontend aus.
+        Verwaltet Listen von Amtsträgern mit Amtszeit, Lebensdaten und Bild und gibt sie
+        im Frontend als Inhaltselement aus. Für Contao 4.13 und Contao 5.
     keywords:
         - Funktionäre
         - Ehrenamt
-        - DSB
+        - Amtszeiten
+        - Schach

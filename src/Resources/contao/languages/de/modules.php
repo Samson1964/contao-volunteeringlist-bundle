@@ -1,13 +1,14 @@
-<?php 
+<?php
 
-/**
- * Contao Open Source CMS
- * Copyright (C) 2005-2014 Leo Feyer
+/*
+ * Dieser Quelltext gehört zu schachbulle/contao-volunteeringlist-bundle.
  *
+ * (c) Frank Hoppe
+ *
+ * @license LGPL-3.0-or-later
  */
 
-
 /**
- * Back end modules
+ * Backend-Module
  */
 $GLOBALS['TL_LANG']['MOD']['volunteeringlist'] = array('Funktionärslisten', 'Funktionärslisten verwalten');
