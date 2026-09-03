@@ -6,3 +6,6 @@
 # PhpUnit
 /phpunit.xml
 /.phpunit.cache/
+
+# Private Arbeitsnotiz, gehoert nicht ins Repository
+/TODO.md

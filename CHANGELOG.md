@@ -1,5 +1,15 @@
 # Funktionärsliste Changelog
 
+## Version 3.0.1 (2026-09-03)
+
+* Change: PHP 8.4 als unterstützte Fassung nachgewiesen und in der Dokumentation ergänzt.
+  Der Quelltext musste dafür nicht angepasst werden — geprüft wurden Syntax, die Unit-Tests
+  sowie das Laden aller DCA-Dateien und die Ausgabe des Inhaltselements unter Contao 4.13.58
+  und Contao 5.7.7, jeweils mit PHP 8.4.24. Keine der in PHP 8.4 abgekündigten Schreibweisen
+  kommt im Bundle vor, insbesondere kein implizit nullbarer Parametertyp.
+* Change: Alle 31 Textdateien des Bundles auf Kodierung geprüft: durchgängig UTF-8 ohne BOM,
+  keine doppelt kodierten Umlaute.
+
 ## Version 3.0.0 (2026-08-02)
 
 Das Bundle läuft ab dieser Version unter Contao 4.13 **und** Contao 5 mit PHP 8.1 bis 8.3.

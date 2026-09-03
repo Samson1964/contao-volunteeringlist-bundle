@@ -3,7 +3,7 @@
 Verwaltet Listen von Amtsträgern — etwa die Präsidenten eines Verbandes — mit Amtszeit,
 Lebensdaten und Bild und gibt sie im Frontend als Inhaltselement aus.
 
-Läuft unter **Contao 4.13 und Contao 5** mit **PHP 8.1 bis 8.3**.
+Läuft unter **Contao 4.13 und Contao 5** mit **PHP 8.1 bis 8.4**.
 
 ## Installation
 
